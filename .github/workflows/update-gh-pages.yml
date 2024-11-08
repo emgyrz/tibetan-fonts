@@ -1,0 +1,40 @@
+name: Update gh-pages
+
+on:
+  push:
+    branches: [ "main" ]
+    
+permissions:
+  contents: write
+  
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Merge main -> gh-pages
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Switch to gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Generate preview and update it
+        run: |
+          node preview_generator
+          git add .
+          git config --global user.name 'Max Z (from github actions script)'
+          git config --global user.email 'emgyrz@gmail.com'
+          git commit -m "generate new preview page at: $(date)"
+          git push
