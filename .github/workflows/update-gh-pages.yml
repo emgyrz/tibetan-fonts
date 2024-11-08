@@ -38,4 +38,3 @@ jobs:
           git config --global user.email 'emgyrz@gmail.com'
           git commit -m "generate new preview page at: $(date)"
           git push
-          git checkout main
